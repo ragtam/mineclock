@@ -1,12 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Jersey 20", sans-serif;
+  }
+</style>
 </head>
-<body>
-
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
-
+<body class="bg-black text-white h-screen m-0 overflow-hidden">
+    <main class="flex h-full">
+        <!-- Time section (4/5 of width) -->
+        <div class="w-4/5 flex items-center justify-center">
+            <h1 id="time" class="text-8xl sm:text-9xl lg:text-[12rem] xl:text-[16rem] font-light">10:20</h1>
+        </div>
+        
+        <!-- Weather section (1/5 of width) -->
+        <aside class="w-1/5 flex flex-col">
+            <!-- Temperature (upper half) -->
+            <div class="h-1/2 flex items-center justify-center border-l border-gray-700">
+                <h3 class="text-3xl sm:text-5xl md:text-6xl font-light">10°C</h3>
+            </div>
+            
+            <!-- Weather (lower half) -->
+            <div class="h-1/2 flex items-center justify-center border-l border-t border-gray-700">
+                <h3 class="text-3xl sm:text-5xl md:text-6xl font-light">sunny</h3>
+            </div>
+        </aside>
+    </main>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('time').textContent = `${hours}:${minutes}`;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
 </body>
 </html>
