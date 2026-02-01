@@ -2,7 +2,7 @@
   "name": "Clock",
   "short_name": "Clock",
   "description": "Full screen clock with weather",
-  "start_url": "/",
+  "start_url": ".",
   "display": "fullscreen",
   "orientation": "landscape",
   "background_color": "#000000",
