@@ -23,19 +23,19 @@
     <main class="flex h-full">
         <!-- Time section (4/5 of width) -->
         <div class="w-4/5 flex items-center justify-center">
-            <h1 id="time" class="text-8xl sm:text-9xl lg:text-[12rem] xl:text-[16rem] font-light">10:20</h1>
+            <h1 id="time" class="text-9xl sm:text-[12rem] lg:text-[16rem] xl:text-[20rem] font-light">10:20</h1>
         </div>
         
         <!-- Weather section (1/5 of width) -->
         <aside class="w-1/5 flex flex-col">
             <!-- Temperature (upper half) -->
             <div class="h-1/2 flex items-center justify-center border-l border-gray-700">
-                <h3 class="text-3xl sm:text-5xl md:text-6xl font-light">10°C</h3>
+                <h3 id="temperature" class="text-5xl sm:text-7xl md:text-8xl font-light">--°C</h3>
             </div>
             
             <!-- Weather (lower half) -->
             <div class="h-1/2 flex items-center justify-center border-l border-t border-gray-700">
-                <h3 class="text-3xl sm:text-5xl md:text-6xl font-light">sunny</h3>
+                <h3 id="weather" class="text-7xl sm:text-8xl md:text-9xl font-light">--</h3>
             </div>
         </aside>
     </main>
@@ -77,6 +77,62 @@
                 requestWakeLock();
             }
         });
+        
+        // Weather API integration
+        const weatherIcons = {
+            0: '☀️',      // Clear
+            1: '🌤️',     // Mainly Clear
+            2: '⛅',     // Partly Cloudy
+            3: '☁️',     // Overcast
+            45: '🌫️',   // Foggy
+            48: '🌫️',   // Foggy
+            51: '🌦️',   // Light Drizzle
+            53: '🌧️',   // Drizzle
+            55: '🌧️',   // Heavy Drizzle
+            61: '🌧️',   // Light Rain
+            63: '🌧️',   // Rain
+            65: '⛈️',    // Heavy Rain
+            71: '🌨️',   // Light Snow
+            73: '❄️',    // Snow
+            75: '❄️',    // Heavy Snow
+            77: '❄️',    // Snow Grains
+            80: '🌦️',   // Light Showers
+            81: '🌧️',   // Showers
+            82: '⛈️',    // Heavy Showers
+            85: '🌨️',   // Light Snow Showers
+            86: '🌨️',   // Snow Showers
+            95: '⛈️',    // Thunderstorm
+            96: '⛈️',    // Thunderstorm
+            99: '⛈️'     // Thunderstorm
+        };
+        
+        async function updateWeather() {
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+                
+                const { latitude, longitude } = position.coords;
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`
+                );
+                
+                const data = await response.json();
+                const temp = Math.round(data.current.temperature_2m);
+                const weatherCode = data.current.weather_code;
+                
+                document.getElementById('temperature').textContent = `${temp}°C`;
+                document.getElementById('weather').textContent = weatherIcons[weatherCode] || '❓';
+            } catch (error) {
+                console.error('Weather fetch error:', error);
+                document.getElementById('temperature').textContent = '--°C';
+                document.getElementById('weather').textContent = '❌';
+            }
+        }
+        
+        // Update weather immediately and then every 10 minutes
+        updateWeather();
+        setInterval(updateWeather, 600000);
     </script>
 </body>
 </html>
