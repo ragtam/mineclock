@@ -20,6 +20,11 @@
 </style>
 </head>
 <body class="bg-black text-white h-screen m-0 overflow-hidden">
+    <!-- Reload button -->
+    <button onclick="location.reload()" class="absolute top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100">
+        ⟳
+    </button>
+    
     <main class="flex h-full pr-8">
         <!-- Time section (4/5 of width) -->
         <div class="w-4/5 flex items-center justify-center">
@@ -64,7 +69,7 @@
         }
         
         updateTime();
-        setInterval(updateTime, 1000);
+        setInterval(updateTime, 30 * 1000);
         
         // Keep screen awake
         let wakeLock = null;
