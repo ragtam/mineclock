@@ -34,6 +34,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Add build info
+        run: |
+          echo "Built from commit: ${{ github.sha }}" >> dist/build-info.txt
+          echo "Build date: $(date -u)" >> dist/build-info.txt
+          echo "Version: $(node -p "require('./package.json').version")" >> dist/build-info.txt
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

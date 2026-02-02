@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<title>Clock</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white h-screen m-0 overflow-hidden">
+    <!-- Reload button -->
+    <button onclick="location.reload()" class="absolute top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100">
+        ⟳
+    </button>
+    
+    <!-- Version info -->
+    <div class="absolute bottom-4 left-4 text-gray-600 text-sm z-10">
+        <span id="version">v1.0.0</span>
+    </div>
+    
+    <main class="flex h-full pr-8">
+        <!-- Time section (4/5 of width) -->
+        <div class="w-4/5 flex items-center justify-center">
+            <h1 id="time" class="text-9xl sm:text-[12rem] lg:text-[16rem] xl:text-[20rem] font-light">10:20</h1>
+        </div>
+        
+        <!-- Weather section (1/5 of width) -->
+        <aside class="w-1/5 flex flex-col">
+            <!-- Temperature (upper third) -->
+            <div class="h-1/3 flex items-center justify-center border-l border-gray-700">
+                <h3 id="temperature" class="text-4xl sm:text-5xl md:text-6xl font-light">--°C</h3>
+            </div>
+            
+            <!-- Weather (middle third) -->
+            <div class="h-1/3 flex items-center justify-center border-l border-t border-gray-700">
+                <h3 id="weather" class="text-6xl sm:text-7xl md:text-8xl font-light">--</h3>
+            </div>
+            
+            <!-- Battery (lower third) -->
+            <div class="h-1/3 flex items-center justify-center border-l border-t border-gray-700">
+                <div class="flex flex-col items-center gap-1">
+                    <div id="battery-icon" class="relative">
+                        <!-- Battery body -->
+                        <div class="w-16 h-8 border-4 border-white relative">
+                            <!-- Battery fill -->
+                            <div id="battery-fill" class="h-full bg-white transition-all duration-300" style="width: 100%"></div>
+                        </div>
+                        <!-- Battery tip -->
+                        <div class="absolute -right-1 top-2 w-1 h-4 bg-white"></div>
+                    </div>
+                    <span id="battery-percent" class="text-2xl font-light">100%</span>
+                    <span id="battery-time" class="text-lg font-light text-gray-400">--h --m</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
