@@ -15,14 +15,48 @@
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-black text-white h-screen m-0 overflow-hidden">
-    <!-- Reload button -->
-    <button onclick="location.reload()" class="absolute top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100">
-        ⟳
+    <!-- Settings button -->
+    <button id="settings-btn" class="absolute top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100">
+        ⚙
     </button>
     
     <!-- Version info -->
     <div class="absolute bottom-4 left-4 text-gray-600 text-sm z-10">
         <span id="version">v1.0.0</span>
+    </div>
+    
+    <!-- Settings modal -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-40 flex items-center justify-center">
+        <div class="settings-container">
+            <div class="settings-header">
+                <h2 class="text-3xl">SETTINGS</h2>
+                <button id="close-settings" class="settings-close-btn">[X]</button>
+            </div>
+            
+            <div class="settings-content">
+                <!-- PV_KEY Input -->
+                <div class="settings-field">
+                    <label for="pv-key-input" class="settings-label">PICOVOICE KEY:</label>
+                    <input 
+                        type="text" 
+                        id="pv-key-input" 
+                        placeholder="ENTER KEY HERE"
+                        class="settings-input"
+                    >
+                    <p class="settings-hint">GET KEY AT: CONSOLE.PICOVOICE.AI</p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="settings-buttons">
+                    <button id="save-settings" class="pixel-btn pixel-btn-primary">
+                        [SAVE]
+                    </button>
+                    <button id="reload-page" class="pixel-btn pixel-btn-secondary">
+                        [RELOAD]
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Wake word overlay -->

@@ -7,6 +7,7 @@ import { initWakeLock } from './modules/wakeLock.js';
 import { initWeather } from './modules/weather.js';
 import { initBattery } from './modules/battery.js';
 import { initVersion } from './modules/version.js';
+import { initSettings } from './modules/settings.js';
 import { registerWakeWord } from './wake-word/index.js';
 import './style.css';
 
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWeather();
     initBattery();
     initVersion();
+    initSettings();
 
     registerWakeWord(() => { 
         console.log('Wake word detected!');
