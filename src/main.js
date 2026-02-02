@@ -18,5 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initBattery();
     initVersion();
 
-    registerWakeWord(() => { console.log('Wake word detected!');})
+    registerWakeWord(() => { 
+        console.log('Wake word detected!');
+        showWakeWordOverlay();
+    });
 });
+
+function showWakeWordOverlay() {
+    const overlay = document.getElementById('wake-word-overlay');
+    overlay.classList.remove('hidden');
+    
+    // Hide overlay after 3 seconds
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+    }, 3000);
+}

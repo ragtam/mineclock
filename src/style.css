@@ -1,3 +1,27 @@
 body {
     font-family: "Jersey 20", sans-serif;
 }
+
+/* Wake word overlay styles */
+.wake-word-frame {
+    position: absolute;
+    inset: 0;
+    border: 20px solid #ef4444;
+    pointer-events: none;
+    z-index: 51;
+}
+
+.wake-word-mic {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
