@@ -1,6 +1,6 @@
 # MineClock
 
-A minimalist clock app with weather and battery information.
+A minimalist clock app with weather and battery information
 
 ## Project Structure
 
