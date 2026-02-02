@@ -39,6 +39,7 @@ jobs:
           echo "Built from commit: ${{ github.sha }}" >> dist/build-info.txt
           echo "Build date: $(date -u)" >> dist/build-info.txt
           echo "Version: $(node -p "require('./package.json').version")" >> dist/build-info.txt
+          touch dist/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
