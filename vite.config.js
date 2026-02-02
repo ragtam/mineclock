@@ -1,9 +1,20 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   base: '/mineclock/',
   root: 'src',
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'assets/*',
+          dest: 'assets'
+        }
+      ]
+    })
+  ],
   build: {
     outDir: '../dist',
     assetsDir: 'assets',
