@@ -1,0 +1,22 @@
+{
+  "name": "mineclock",
+  "version": "1.0.0",
+  "description": "Full screen clock with weather",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "clock",
+    "weather",
+    "fullscreen"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}
