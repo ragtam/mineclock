@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 export default defineConfig({
   base: '/mineclock/',
   root: 'src',
   plugins: [
+    svelte(),
     viteStaticCopy({
       targets: [
         {
