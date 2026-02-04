@@ -26,49 +26,187 @@
 </script>
 
 {#if isOpen}
-  <div class="fixed inset-0 bg-black bg-opacity-90 z-40 flex items-center justify-center">
-    <div class="settings-container">
-      <div class="settings-header">
-        <h2 class="text-3xl">SETTINGS</h2>
-        <button on:click={onClose} class="settings-close-btn">[X]</button>
+  <div class="fixed inset-0 bg-teal-600 z-40 flex items-center justify-center">
+    <!-- Windows 95 style dialog box -->
+    <div class="win95-window">
+      <!-- Title bar -->
+      <div class="win95-titlebar">
+        <span class="win95-title">Settings</span>
+        <button on:click={onClose} class="win95-close-btn">✕</button>
       </div>
       
-      <div class="settings-content">
+      <!-- Content area -->
+      <div class="win95-content">
         <!-- PV_KEY Input -->
-        <div class="settings-field">
-          <label for="pv-key-input" class="settings-label">PICOVOICE KEY:</label>
+        <div class="win95-field">
+          <label for="pv-key-input" class="win95-label">Picovoice Key:</label>
           <input 
             type="text" 
             id="pv-key-input" 
             bind:value={pvKey}
-            placeholder="ENTER KEY HERE"
-            class="settings-input"
+            placeholder="Enter key here"
+            class="win95-input"
           />
-          <p class="settings-hint">GET KEY AT: CONSOLE.PICOVOICE.AI</p>
+          <p class="win95-hint">Get key at: console.picovoice.ai</p>
         </div>
 
-        <div class="settings-field">
-          <label for="hello-command" class="settings-label">Hello Command:/label>
+        <div class="win95-field">
+          <label for="hello-command" class="win95-label">Hello Command:</label>
           <input 
             type="text" 
             id="hello-command" 
             bind:value={helloCommand}
-            placeholder="Enter Hello Command Here"
-            class="settings-input"
+            placeholder="Enter hello command here"
+            class="win95-input"
           />
-          <p class="settings-hint">GET KEY AT: CONSOLE.PICOVOICE.AI</p>
+          <p class="win95-hint">Text to speak when wake word detected</p>
         </div>
         
         <!-- Action Buttons -->
-        <div class="settings-buttons">
-          <button on:click={handleSave} class="pixel-btn pixel-btn-primary">
-            [SAVE]
+        <div class="win95-buttons">
+          <button on:click={handleSave} class="win95-btn">
+            OK
           </button>
-          <button on:click={handleReload} class="pixel-btn pixel-btn-secondary">
-            [RELOAD]
+          <button on:click={handleReload} class="win95-btn">
+            Reload
+          </button>
+          <button on:click={onClose} class="win95-btn">
+            Cancel
           </button>
         </div>
       </div>
     </div>
   </div>
 {/if}
+
+<style>
+  .win95-window {
+    width: 520px;
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080;
+    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+  }
+  
+  .win95-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    padding: 2px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+  }
+  
+  .win95-title {
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  
+  .win95-close-btn {
+    width: 18px;
+    height: 18px;
+    background: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .win95-close-btn:active {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  
+  .win95-content {
+    padding: 16px;
+  }
+  
+  .win95-field {
+    margin-bottom: 20px;
+  }
+  
+  .win95-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .win95-input {
+    width: 100%;
+    padding: 4px 6px;
+    background: white;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #dfdfdf;
+    border-bottom: 2px solid #dfdfdf;
+    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+    font-size: 12px;
+    color: #000000;
+    box-sizing: border-box;
+  }
+  
+  .win95-input:focus {
+    outline: 1px dotted #000000;
+    outline-offset: -4px;
+  }
+  
+  .win95-hint {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #000080;
+  }
+  
+  .win95-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #808080;
+  }
+  
+  .win95-btn {
+    min-width: 80px;
+    padding: 6px 16px;
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080;
+    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    cursor: pointer;
+  }
+  
+  .win95-btn:active {
+    border-top: 2px solid #000000;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    box-shadow: inset -1px -1px 0 #dfdfdf, inset 1px 1px 0 #808080;
+    padding: 7px 15px 5px 17px;
+  }
+  
+  .win95-btn:focus {
+    outline: 1px dotted #000000;
+    outline-offset: -4px;
+  }
+</style>
