@@ -26,9 +26,6 @@
   
   function showWakeWordOverlay() {
     wakeWordVisible = true;
-    // setTimeout(() => {
-    //   wakeWordVisible = false;
-    // }, 3000);
   }
   
   function handleSaveSettings() {
@@ -72,7 +69,10 @@
   />
   
   <!-- Wake word overlay -->
-  <WakeWordOverlay isVisible={wakeWordVisible} />
+  <WakeWordOverlay 
+    isVisible={wakeWordVisible} 
+    onClose={() => wakeWordVisible = false}
+  />
   
   <main class="flex h-full pr-8">
     <!-- Time section -->

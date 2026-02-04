@@ -1,10 +1,30 @@
 <script>
   export let isVisible = false;
+  export let onClose = () => {};
+  
   let recognitionResult = '';
+  let inactivityTimeout;
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const INACTIVITY_DELAY = 5000; // 5 seconds of inactivity
+
+  function resetInactivityTimer() {
+    if (inactivityTimeout) clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(() => {
+      console.log('Closing due to inactivity');
+      onClose();
+    }, INACTIVITY_DELAY);
+  }
+
+  function cleanup() {
+    if (inactivityTimeout) {
+      clearTimeout(inactivityTimeout);
+      inactivityTimeout = null;
+    }
+  }
 
   $:
     if (isVisible) {
+      recognitionResult = '';
       const helloCommand = localStorage.getItem('HELLO_COMMAND') || 'Cześć, jak mogę pomóc?'
       const utterThis = new SpeechSynthesisUtterance(helloCommand);
       utterThis.lang= 'pl';
@@ -16,17 +36,33 @@
       recognition.maxAlternatives = 1;
 
       recognition.start();
+      resetInactivityTimer();
 
       recognition.onspeechstart = () => {
         console.log('SpeechRecognition.onspeechstart');
-      } 
+        resetInactivityTimer();
+      };
+      
       recognition.onresult = (event) => {
         console.log('result: ', event);
         const transcript = event.results[0][0].transcript;
         console.log('Transcript: ', transcript);
         recognitionResult = transcript;
+        resetInactivityTimer();
+      };
+      
+      recognition.onend = () => {
+        console.log('SpeechRecognition.onend');
+        resetInactivityTimer();
+      };
+      
+      recognition.onerror = (event) => {
+        console.log('SpeechRecognition.onerror', event.error);
+        resetInactivityTimer();
+      };
+    } else {
+      cleanup();
     }
-  }
 </script>
 
 {#if isVisible}
