@@ -26,9 +26,9 @@
   
   function showWakeWordOverlay() {
     wakeWordVisible = true;
-    setTimeout(() => {
-      wakeWordVisible = false;
-    }, 3000);
+    // setTimeout(() => {
+    //   wakeWordVisible = false;
+    // }, 3000);
   }
   
   function handleSaveSettings() {
@@ -43,12 +43,22 @@
 
 <div class="bg-black text-white h-screen m-0 overflow-hidden">
   <!-- Settings button -->
+   <div class="absolute top-0 left-0 w-full h-full">
   <button 
     on:click={() => settingsOpen = true}
-    class="absolute top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+    class=" top-4 left-4 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
   >
     ⚙
   </button>
+
+    <button 
+    on:click={showWakeWordOverlay}
+    class="absolute top-4 left-8 px-4 py-2 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+  >
+    🔊
+  </button>
+   </div>
+
   
   <!-- Version info -->
   <VersionInfo />

@@ -7,14 +7,16 @@
   export let onReload = () => {};
   
   let pvKey = '';
-  
+  let helloCommand = '';
   onMount(() => {
     // Load saved key from localStorage
     pvKey = localStorage.getItem('PV_KEY') || '';
+    helloCommand = localStorage.getItem('HELLO_COMMAND') || '';
   });
   
   function handleSave() {
     localStorage.setItem('PV_KEY', pvKey);
+    localStorage.setItem('HELLO_COMMAND', helloCommand);
     onSave();
   }
   
@@ -40,6 +42,18 @@
             id="pv-key-input" 
             bind:value={pvKey}
             placeholder="ENTER KEY HERE"
+            class="settings-input"
+          />
+          <p class="settings-hint">GET KEY AT: CONSOLE.PICOVOICE.AI</p>
+        </div>
+
+        <div class="settings-field">
+          <label for="hello-command" class="settings-label">Hello Command:/label>
+          <input 
+            type="text" 
+            id="hello-command" 
+            bind:value={helloCommand}
+            placeholder="Enter Hello Command Here"
             class="settings-input"
           />
           <p class="settings-hint">GET KEY AT: CONSOLE.PICOVOICE.AI</p>
