@@ -8,7 +8,7 @@
   import VersionInfo from './components/VersionInfo.svelte';
   
   import { initWakeLock } from './modules/wakeLock.js';
-  import { registerWakeWord } from './wake-word/index.js';
+  // import { registerWakeWord } from './wake-word/index.js';
   
   let settingsOpen = false;
   let wakeWordVisible = false;
@@ -18,10 +18,10 @@
     initWakeLock();
     
     // Register wake word detection
-    registerWakeWord(() => { 
-      console.log('Wake word detected!');
-      showWakeWordOverlay();
-    });
+    // registerWakeWord(() => { 
+    //   console.log('Wake word detected!');
+    //   showWakeWordOverlay();
+    // });
   });
   
   function showWakeWordOverlay() {
