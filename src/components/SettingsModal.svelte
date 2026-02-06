@@ -43,18 +43,6 @@
       <div class="win95-content">
         <!-- PV_KEY Input -->
         <div class="win95-field">
-          <label for="pv-key-input" class="win95-label">Picovoice Key:</label>
-          <input 
-            type="text" 
-            id="pv-key-input" 
-            bind:value={pvKey}
-            placeholder="Enter key here"
-            class="win95-input"
-          />
-          <p class="win95-hint">Get key at: console.picovoice.ai</p>
-        </div>
-
-        <div class="win95-field">
           <label for="hello-command" class="win95-label">Hello Command:</label>
           <input 
             type="text" 
