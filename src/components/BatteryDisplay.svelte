@@ -91,9 +91,9 @@
   }
 </style>
 
-<div class="fixed bottom-0 left-0 w-full h-10 bg-white z-50 select-none flex items-center px-3 border-t-2 border-gray-100">
+<div class="fixed bottom-0 left-0 w-full h-4 bg-white z-50 select-none flex items-center px-3 border-t-2 border-gray-100">
   
-  <div class="relative w-full h-6 bg-gray-200 rounded-md overflow-hidden shadow-inner border border-gray-300">
+  <div class="relative w-full h-3 bg-gray-200 rounded-md overflow-hidden shadow-inner border border-gray-300">
     
     <div 
       class="h-full transition-all duration-700 ease-out plastic-gloss relative

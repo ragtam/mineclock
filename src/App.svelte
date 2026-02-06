@@ -5,8 +5,7 @@
   import BatteryDisplay from './components/BatteryDisplay.svelte'; // Ensure this is imported
   import SettingsModal from './components/SettingsModal.svelte';
   import WakeWordOverlay from './components/WakeWordOverlay.svelte';
-  import VersionInfo from './components/VersionInfo.svelte';
-  
+
   import { initWakeLock } from './modules/wakeLock.js';
   import { registerWakeWord } from './wake-word/index.js';
   
@@ -35,16 +34,16 @@
   }
 </script>
 
-<div class="bg-black text-white h-screen m-0 overflow-hidden relative"> <div class="absolute top-8 left-8 w-full h-full pointer-events-none"> <button 
+<div class="bg-black text-white h-screen m-0 overflow-hidden relative"> <div class="absolute top-4 left-4 w-full h-full pointer-events-none"> <button 
         on:click={() => settingsOpen = true}
-        class="pointer-events-auto left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+        class="pointer-events-auto left-8 px-4 py-4 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
       >
         ⚙️
       </button>
 
       <button 
         on:click={showWakeWordOverlay}
-        class="pointer-events-auto left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+        class="pointer-events-auto left-8 px-4 py-4 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
       >
         🎤
       </button>
