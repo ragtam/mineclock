@@ -19,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
     "@picovoice/porcupine-web": "4.0.0",
     "@picovoice/web-voice-processor": "~4.0.8"
   },
