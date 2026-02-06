@@ -62,7 +62,7 @@
   onDestroy(() => clearInterval(interval));
 </script>
 
-<div class="h-full flex flex-col bg-white p-2 gap-2 font-sans overflow-hidden select-none">
+<div class="h-full flex flex-col p-2 gap-2 font-sans overflow-hidden select-none">
   
   <div class="flex-1 bg-red-500 rounded-xl border-b-4 border-red-700 shadow-sm flex flex-col items-center justify-center text-white relative p-2">
     <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-white/20"></div>

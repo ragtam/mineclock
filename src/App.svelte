@@ -62,12 +62,14 @@
     onClose={() => wakeWordVisible = false}
   />
   
-  <main class="flex h-full pr-8">
+  <main class="flex h-full pr-8 pb-10">
     <TimeDisplay />
     
-    <aside class="w-1/5 flex flex-col">
-      <WeatherDisplay />
-      </aside>
+    <aside class="w-1/5 flex flex-col pb-5">
+      <div class="flex-1 bg-white">
+        <WeatherDisplay />
+      </div>
+    </aside>
   </main>
 
   <BatteryDisplay />
