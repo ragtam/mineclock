@@ -65,26 +65,26 @@
 
 <div class="h-full flex flex-col bg-slate-900 text-slate-100 font-sans border-l border-slate-800">
   
-  <div class="flex-1 flex flex-col items-center justify-center p-6">
-    <div class="text-7xl font-extralight tracking-tighter mb-1">
+  <div class="flex-1 flex flex-col items-center justify-center">
+    <div class="text-5xl font-extralight tracking-tighter mb-1">
       {weather.temp}°
     </div>
     <div class="text-xs uppercase tracking-widest text-blue-400 font-bold">
       {weather.description}
     </div>
-    <div class="mt-4 flex gap-4 text-xs text-slate-400">
+    <div class="mt-2 flex gap-2 text-xs text-slate-400">
       <span class="flex items-center gap-1">🌡️ Feels {weather.feelsLike}°</span>
     </div>
   </div>
 
   <div class="border-y border-slate-800 flex divide-x divide-slate-800 bg-slate-950/30">
-    <div class="flex-1 p-4 flex flex-col items-center">
+    <div class="flex-1 p-3 flex flex-col items-center">
       <span class="text-[10px] uppercase text-slate-500 mb-1">UV Index</span>
       <span class="text-xl font-medium {weather.uvIndex > 5 ? 'text-orange-400' : 'text-emerald-400'}">
         {weather.uvIndex}
       </span>
     </div>
-    <div class="flex-1 p-4 flex flex-col items-center">
+    <div class="flex-1 p-3 flex flex-col items-center">
       <span class="text-[10px] uppercase text-slate-500 mb-1">Wind</span>
       <span class="text-xl font-medium">{weather.wind} <span class="text-xs">km/h</span></span>
     </div>
