@@ -15,11 +15,10 @@
   let latitude = 52.2297; 
   let longitude = 21.0122;
 
-  // Simple mapping for Open-Meteo weather codes
   const weatherMap = {
-    0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
-    45: 'Fog', 48: 'Depositing rime fog', 51: 'Light drizzle', 61: 'Slight rain',
-    71: 'Slight snow', 80: 'Rain showers', 95: 'Thunderstorm'
+    0: 'Clear', 1: 'Clear', 2: 'Cloudy', 3: 'Overcast',
+    45: 'Fog', 48: 'Fog', 51: 'Drizzle', 61: 'Rain',
+    71: 'Snow', 80: 'Showers', 95: 'Storm'
   };
 
   async function getLocation() {
@@ -57,48 +56,55 @@
   onMount(async () => {
     await getLocation();
     await fetchAllData();
-    interval = setInterval(fetchAllData, 15 * 60 * 1000); // 15 min refresh
+    interval = setInterval(fetchAllData, 15 * 60 * 1000);
   });
   
   onDestroy(() => clearInterval(interval));
 </script>
 
-<div class="h-full flex flex-col bg-slate-900 text-slate-100 font-sans border-l border-slate-800">
+<div class="h-full flex flex-col bg-white p-2 gap-2 font-sans overflow-hidden select-none">
   
-  <div class="flex-1 flex flex-col items-center justify-center">
-    <div class="text-5xl font-extralight tracking-tighter mb-1">
+  <div class="flex-1 bg-red-500 rounded-xl border-b-4 border-red-700 shadow-sm flex flex-col items-center justify-center text-white relative p-2">
+    <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-white/20"></div>
+    <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-white/20"></div>
+
+    <div class="text-6xl font-black leading-none drop-shadow-md">
       {weather.temp}°
     </div>
-    <div class="text-xs uppercase tracking-widest text-blue-400 font-bold">
+    <div class="text-sm uppercase font-bold bg-black/20 px-3 py-1 rounded-full mt-2 truncate max-w-full">
       {weather.description}
     </div>
-    <div class="mt-2 flex gap-2 text-xs text-slate-400">
-      <span class="flex items-center gap-1">🌡️ Feels {weather.feelsLike}°</span>
+    <div class="mt-2 text-sm font-bold opacity-90">
+       Feels {weather.feelsLike}°
     </div>
   </div>
 
-  <div class="border-y border-slate-800 flex divide-x divide-slate-800 bg-slate-950/30">
-    <div class="flex-1 p-3 flex flex-col items-center">
-      <span class="text-[10px] uppercase text-slate-500 mb-1">UV Index</span>
-      <span class="text-xl font-medium {weather.uvIndex > 5 ? 'text-orange-400' : 'text-emerald-400'}">
+  <div class="flex gap-2 h-24">
+    <div class="flex-1 bg-blue-500 rounded-xl border-b-4 border-blue-700 p-2 flex flex-col items-center justify-center text-white">
+      <span class="text-[10px] uppercase font-bold text-blue-100">UV Index</span>
+      <span class="text-2xl font-black {weather.uvIndex > 5 ? 'text-yellow-300' : 'text-white'}">
         {weather.uvIndex}
       </span>
     </div>
-    <div class="flex-1 p-3 flex flex-col items-center">
-      <span class="text-[10px] uppercase text-slate-500 mb-1">Wind</span>
-      <span class="text-xl font-medium">{weather.wind} <span class="text-xs">km/h</span></span>
+
+    <div class="flex-1 bg-blue-500 rounded-xl border-b-4 border-blue-700 p-2 flex flex-col items-center justify-center text-white">
+      <span class="text-[10px] uppercase font-bold text-blue-100">Wind</span>
+      <div class="flex items-baseline gap-1">
+        <span class="text-2xl font-black">{weather.wind}</span>
+        <span class="text-[10px] font-bold opacity-80">km</span>
+      </div>
     </div>
   </div>
 
-  <div class="p-6 flex justify-around items-center">
+  <div class="h-20 bg-yellow-400 rounded-xl border-b-4 border-yellow-600 flex items-center justify-around px-2 text-yellow-900">
     <div class="flex flex-col items-center">
-      <span class="text-2xl mb-1">🌅</span>
-      <span class="text-sm font-light text-slate-300">{weather.sunrise}</span>
+      <span class="text-xl">🌅</span>
+      <span class="text-xs font-black">{weather.sunrise}</span>
     </div>
-    <div class="h-8 w-px bg-slate-800"></div>
+    <div class="h-8 w-1 bg-yellow-600/30 rounded-full"></div>
     <div class="flex flex-col items-center">
-      <span class="text-2xl mb-1">🌇</span>
-      <span class="text-sm font-light text-slate-300">{weather.sunset}</span>
+      <span class="text-xl">🌇</span>
+      <span class="text-xs font-black">{weather.sunset}</span>
     </div>
   </div>
 

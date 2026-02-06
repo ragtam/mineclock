@@ -8,12 +8,11 @@
   let inactivityTimeout;
   let recognition = null;
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const INACTIVITY_DELAY = 5000; // 5 seconds of inactivity
+  const INACTIVITY_DELAY = 5000; 
 
   function resetInactivityTimer() {
     if (inactivityTimeout) clearTimeout(inactivityTimeout);
     inactivityTimeout = setTimeout(() => {
-      console.log('Closing due to inactivity');
       onClose();
     }, INACTIVITY_DELAY);
   }
@@ -24,22 +23,15 @@
       inactivityTimeout = null;
     }
     if (recognition) {
-      try {
-        recognition.stop();
-      } catch (e) {
-        // Ignore errors when stopping
-      }
+      try { recognition.stop(); } catch (e) {}
       recognition = null;
     }
   }
 
-  $:
-    if (isVisible) {
-      // Pause wake word detection while overlay is active
+  $: if (isVisible) {
       pauseWakeWord();
-      
       recognitionResult = '';
-      const helloCommand = localStorage.getItem('HELLO_COMMAND') || 'Cześć, jak mogę pomóc?'
+      const helloCommand = localStorage.getItem('HELLO_COMMAND') || 'Cześć?'
       const utterThis = new SpeechSynthesisUtterance(helloCommand);
       utterThis.lang= 'pl';
       speechSynthesis.speak(utterThis);
@@ -48,149 +40,77 @@
       recognition.lang = 'pl';
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
-
       recognition.start();
       resetInactivityTimer();
 
-      recognition.onspeechstart = () => {
-        console.log('SpeechRecognition.onspeechstart');
-        resetInactivityTimer();
-      };
-      
       recognition.onresult = (event) => {
-        console.log('result: ', event);
-        const transcript = event.results[0][0].transcript;
-        console.log('Transcript: ', transcript);
-        recognitionResult = transcript;
+        recognitionResult = event.results[0][0].transcript;
         resetInactivityTimer();
       };
       
-      recognition.onend = () => {
-        console.log('SpeechRecognition.onend');
-        resetInactivityTimer();
-      };
+      // Handle end/error to keep timer alive or close
+      recognition.onend = resetInactivityTimer;
+      recognition.onerror = resetInactivityTimer;
       
-      recognition.onerror = (event) => {
-        console.log('SpeechRecognition.onerror', event.error);
-        resetInactivityTimer();
-      };
     } else {
       cleanup();
-      // Resume wake word detection when overlay closes
       resumeWakeWord();
     }
 </script>
 
 {#if isVisible}
-  <div class="fixed inset-0 bg-black z-50 flex items-center justify-center">
-    <!-- Windows 95 style dialog box -->
-    <div class="win95-window">
-      <!-- Title bar -->
-      <div class="win95-titlebar">
-        <span class="win95-title">Voice Recognition</span>
-        <button class="win95-close-btn">✕</button>
+  <div class="fixed inset-0 z-50 bg-green-500 flex flex-col p-4 gap-4 animate-pop-in">
+    
+    <div class="flex justify-between items-center shrink-0 h-16">
+      <div class="text-green-900 font-black text-xl uppercase tracking-wider bg-green-600/30 px-4 py-2 rounded-xl">
+        {#if !recognitionResult} Słucham... {:else} Mówienie... {/if}
       </div>
       
-      <!-- Content area -->
-      <div class="win95-content">
-        {#if recognitionResult}
-          <div class="win95-text-display">
-            {recognitionResult}
-          </div>
-        {:else}
-          <div class="flex justify-center">
-            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#000080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" y1="19" x2="12" y2="22"/>
-              <line x1="8" y1="22" x2="16" y2="22"/>
-            </svg>
-          </div>
-          <div class="win95-status-text">Listening...</div>
-        {/if}
-      </div>
+      <button 
+        on:click={onClose}
+        class="w-16 h-16 bg-red-500 rounded-2xl border-b-8 border-red-700 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center shadow-lg"
+      >
+        <span class="text-white font-black text-2xl">✕</span>
+      </button>
     </div>
+
+    <div class="flex-1 w-full relative">
+      
+      {#if recognitionResult}
+        <div class="absolute inset-0 bg-white rounded-3xl border-b-8 border-slate-300 p-6 flex items-center justify-center shadow-inner overflow-hidden">
+          <p class="text-center font-black text-slate-800 break-words leading-tight" 
+             style="font-size: clamp(2rem, 8vw, 4rem);">
+            "{recognitionResult}"
+          </p>
+        </div>
+      {:else}
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="relative">
+            <div class="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-50"></div>
+            <div class="absolute inset-[-20px] bg-green-400 rounded-full animate-ping opacity-30 animation-delay-300"></div>
+            
+            <div class="relative w-40 h-40 bg-green-600 rounded-full border-8 border-green-700 flex items-center justify-center shadow-2xl">
+              <svg class="w-20 h-20 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </div>
+    
   </div>
 {/if}
 
 <style>
-  .win95-window {
-    width: 480px;
-    background: #c0c0c0;
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #000000;
-    border-bottom: 2px solid #000000;
-    box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080;
-    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+  @keyframes popIn {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
   }
-  
-  .win95-titlebar {
-    background: linear-gradient(to right, #000080, #1084d0);
-    padding: 2px 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 24px;
+  .animate-pop-in {
+    animation: popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  
-  .win95-title {
-    color: white;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
-  
-  .win95-close-btn {
-    width: 18px;
-    height: 18px;
-    background: #c0c0c0;
-    border-top: 1px solid #ffffff;
-    border-left: 1px solid #ffffff;
-    border-right: 1px solid #000000;
-    border-bottom: 1px solid #000000;
-    font-size: 10px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .win95-close-btn:active {
-    border-top: 1px solid #000000;
-    border-left: 1px solid #000000;
-    border-right: 1px solid #ffffff;
-    border-bottom: 1px solid #ffffff;
-  }
-  
-  .win95-content {
-    padding: 24px;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .win95-text-display {
-    background: white;
-    border-top: 2px solid #808080;
-    border-left: 2px solid #808080;
-    border-right: 2px solid #dfdfdf;
-    border-bottom: 2px solid #dfdfdf;
-    padding: 16px;
-    width: 100%;
-    min-height: 100px;
-    font-size: 16px;
-    color: #000000;
-    font-family: 'Courier New', monospace;
-  }
-  
-  .win95-status-text {
-    margin-top: 16px;
-    color: #000000;
-    font-size: 14px;
-    font-weight: bold;
+  .animation-delay-300 {
+    animation-delay: 300ms;
   }
 </style>
