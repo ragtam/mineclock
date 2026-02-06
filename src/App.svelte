@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import TimeDisplay from './components/TimeDisplay.svelte';
   import WeatherDisplay from './components/WeatherDisplay.svelte';
-  import BatteryDisplay from './components/BatteryDisplay.svelte';
+  import BatteryDisplay from './components/BatteryDisplay.svelte'; // Ensure this is imported
   import SettingsModal from './components/SettingsModal.svelte';
   import WakeWordOverlay from './components/WakeWordOverlay.svelte';
   import VersionInfo from './components/VersionInfo.svelte';
@@ -14,10 +14,7 @@
   let wakeWordVisible = false;
   
   onMount(() => {
-    // Initialize wake lock
     initWakeLock();
-    
-    // Register wake word detection
     registerWakeWord(() => { 
       console.log('Wake word detected!');
       showWakeWordOverlay();
@@ -38,29 +35,21 @@
   }
 </script>
 
-<div class="bg-black text-white h-screen m-0 overflow-hidden">
-  <!-- Settings button -->
-   <div class="absolute top-8 left-8 w-full h-full">
-  <button 
-    on:click={() => settingsOpen = true}
-    class="left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
-  >
-    ⚙️
-  </button>
+<div class="bg-black text-white h-screen m-0 overflow-hidden relative"> <div class="absolute top-8 left-8 w-full h-full pointer-events-none"> <button 
+        on:click={() => settingsOpen = true}
+        class="pointer-events-auto left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+      >
+        ⚙️
+      </button>
 
-    <button 
-    on:click={showWakeWordOverlay}
-    class="left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
-  >
-    🎤
-  </button>
+      <button 
+        on:click={showWakeWordOverlay}
+        class="pointer-events-auto left-8 px-6 py-6 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100"
+      >
+        🎤
+      </button>
    </div>
-
   
-  <!-- Version info -->
-  <VersionInfo />
-  
-  <!-- Settings modal -->
   <SettingsModal 
     isOpen={settingsOpen}
     onClose={() => settingsOpen = false}
@@ -68,20 +57,18 @@
     onReload={handleReloadPage}
   />
   
-  <!-- Wake word overlay -->
   <WakeWordOverlay 
     isVisible={wakeWordVisible} 
     onClose={() => wakeWordVisible = false}
   />
   
   <main class="flex h-full pr-8">
-    <!-- Time section -->
     <TimeDisplay />
     
-    <!-- Weather section -->
     <aside class="w-1/5 flex flex-col">
       <WeatherDisplay />
-      <BatteryDisplay />
-    </aside>
+      </aside>
   </main>
+
+  <BatteryDisplay />
 </div>
