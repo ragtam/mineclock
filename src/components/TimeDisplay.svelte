@@ -24,7 +24,7 @@
   });
 </script>
 
-<div class="w-full h-full flex items-center justify-center bg-black font-sans select-none overflow-hidden">
+<div class="w-full h-full pt-8 flex items-center justify-center bg-black font-sans select-none overflow-hidden">
   
   <div class="flex items-baseline gap-1 sm:gap-2">
     
