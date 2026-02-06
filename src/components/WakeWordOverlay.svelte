@@ -1,9 +1,12 @@
 <script>
+  import { pauseWakeWord, resumeWakeWord } from '../wake-word/index.js';
+  
   export let isVisible = false;
   export let onClose = () => {};
   
   let recognitionResult = '';
   let inactivityTimeout;
+  let recognition = null;
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const INACTIVITY_DELAY = 5000; // 5 seconds of inactivity
 
@@ -20,17 +23,28 @@
       clearTimeout(inactivityTimeout);
       inactivityTimeout = null;
     }
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch (e) {
+        // Ignore errors when stopping
+      }
+      recognition = null;
+    }
   }
 
   $:
     if (isVisible) {
+      // Pause wake word detection while overlay is active
+      pauseWakeWord();
+      
       recognitionResult = '';
       const helloCommand = localStorage.getItem('HELLO_COMMAND') || 'Cześć, jak mogę pomóc?'
       const utterThis = new SpeechSynthesisUtterance(helloCommand);
       utterThis.lang= 'pl';
       speechSynthesis.speak(utterThis);
 
-      const recognition = new SpeechRecognition();
+      recognition = new SpeechRecognition();
       recognition.lang = 'pl';
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
@@ -62,11 +76,13 @@
       };
     } else {
       cleanup();
+      // Resume wake word detection when overlay closes
+      resumeWakeWord();
     }
 </script>
 
 {#if isVisible}
-  <div class="fixed inset-0 bg-teal-600 z-50 flex items-center justify-center">
+  <div class="fixed inset-0 bg-black z-50 flex items-center justify-center">
     <!-- Windows 95 style dialog box -->
     <div class="win95-window">
       <!-- Title bar -->

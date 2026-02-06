@@ -8,15 +8,19 @@
   
   let pvKey = '';
   let helloCommand = '';
+  let wakeWord = '';
+  
   onMount(() => {
     // Load saved key from localStorage
     pvKey = localStorage.getItem('PV_KEY') || '';
     helloCommand = localStorage.getItem('HELLO_COMMAND') || '';
+    wakeWord = localStorage.getItem('WAKE_WORD') || 'budzik';
   });
   
   function handleSave() {
     localStorage.setItem('PV_KEY', pvKey);
     localStorage.setItem('HELLO_COMMAND', helloCommand);
+    localStorage.setItem('WAKE_WORD', wakeWord);
     onSave();
   }
   
@@ -26,7 +30,7 @@
 </script>
 
 {#if isOpen}
-  <div class="fixed inset-0 bg-teal-600 z-40 flex items-center justify-center">
+  <div class="fixed inset-0 bg-black z-40 flex items-center justify-center">
     <!-- Windows 95 style dialog box -->
     <div class="win95-window">
       <!-- Title bar -->
@@ -60,6 +64,18 @@
             class="win95-input"
           />
           <p class="win95-hint">Text to speak when wake word detected</p>
+        </div>
+
+        <div class="win95-field">
+          <label for="wake-word" class="win95-label">Wake Word:</label>
+          <input 
+            type="text" 
+            id="wake-word" 
+            bind:value={wakeWord}
+            placeholder="budzik"
+            class="win95-input"
+          />
+          <p class="win95-hint">Word to activate voice assistant (Polish)</p>
         </div>
         
         <!-- Action Buttons -->
