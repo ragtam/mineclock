@@ -22,11 +22,12 @@
   let sentenceBuffer = "";
 
   // --- STT (Speech Recognition) State ---
-  let isListening = false;
+  let isListening = false; // Hardware state
+  let wantsListening = false; // User intent (Conversation mode)
   let recognition = null;
   let recognitionSupported = false;
-  let silenceTimer = null; // Stores the ID of the auto-send timer
-  const SILENCE_TIMEOUT = 2000; // Time in ms to wait before sending
+  let silenceTimer = null; 
+  const SILENCE_TIMEOUT = 2000; 
   
   onMount(() => {
     if (isVisible && !generator && !isModelLoading) {
@@ -39,7 +40,7 @@
       if (SpeechRecognition) {
         recognitionSupported = true;
         recognition = new SpeechRecognition();
-        recognition.continuous = true; // Changed to true to keep listening during pauses until WE decide to stop
+        recognition.continuous = true; 
         recognition.interimResults = true; 
         recognition.lang = 'en-US';
 
@@ -47,11 +48,10 @@
         
         recognition.onend = () => { 
             isListening = false; 
-            clearTimeout(silenceTimer); // Safety clear
+            clearTimeout(silenceTimer); 
         };
         
         recognition.onresult = (event) => {
-          // 1. Get current text
           const transcript = Array.from(event.results)
             .map(result => result[0])
             .map(result => result.transcript)
@@ -59,10 +59,9 @@
           
           inputMessage = transcript; 
 
-          // 2. Reset Silence Timer
           clearTimeout(silenceTimer);
           
-          // 3. Start new countdown to Auto-Send
+          // Auto-Send on silence
           silenceTimer = setTimeout(() => {
              console.log("Silence detected. Sending...");
              if (isListening) recognition.stop();
@@ -76,6 +75,7 @@
           clearTimeout(silenceTimer);
           if (event.error === 'not-allowed') {
             error = "Microphone access denied.";
+            wantsListening = false; // Cancel mode on error
           }
         };
       }
@@ -149,18 +149,46 @@
   function toggleListening() {
     if (!recognition) return;
     
-    if (isListening) {
-      recognition.stop();
-      clearTimeout(silenceTimer);
-    } else {
+    // Toggle the "Hands Free" intent
+    wantsListening = !wantsListening;
+    
+    if (wantsListening) {
       error = null;
       inputMessage = ''; 
-      recognition.start();
+      try {
+        recognition.start();
+      } catch (e) {
+        console.warn("Recognition already started");
+      }
+    } else {
+      recognition.stop();
+      clearTimeout(silenceTimer);
+    }
+  }
+  
+  // Helper to restart mic only after the AI finishes talking
+  function restartListeningWhenSafe() {
+    if (!wantsListening) return;
+
+    // Check if TTS is still speaking
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      setTimeout(restartListeningWhenSafe, 200); // Check again in 200ms
+      return;
+    }
+
+    // Safe to start mic
+    if (!isListening) {
+      try {
+        inputMessage = '';
+        recognition.start();
+      } catch (e) {
+        // Ignore errors if already started
+      }
     }
   }
   
   async function sendMessage() {
-    clearTimeout(silenceTimer); // Ensure no timers fire during generation
+    clearTimeout(silenceTimer); 
     if (!inputMessage.trim() || isGenerating || !generator) return;
     
     stopSpeaking();
@@ -210,17 +238,23 @@
 
           if (soundEnabled) {
              sentenceBuffer += text;
-             if (/[.!?\n]/.test(sentenceBuffer)) {
+             // 2. Updated Regex to include commas, colons, semi-colons
+             if (/[.!?\n,;:]/.test(sentenceBuffer)) {
                 const lastPunctuation = Math.max(
                   sentenceBuffer.lastIndexOf('.'), 
                   sentenceBuffer.lastIndexOf('!'), 
                   sentenceBuffer.lastIndexOf('?'),
-                  sentenceBuffer.lastIndexOf('\n')
+                  sentenceBuffer.lastIndexOf('\n'),
+                  sentenceBuffer.lastIndexOf(','),
+                  sentenceBuffer.lastIndexOf(';'),
+                  sentenceBuffer.lastIndexOf(':')
                 );
 
-                const toSpeak = sentenceBuffer.slice(0, lastPunctuation + 1);
-                sentenceBuffer = sentenceBuffer.slice(lastPunctuation + 1);
-                speakChunk(toSpeak);
+                if (lastPunctuation !== -1) {
+                    const toSpeak = sentenceBuffer.slice(0, lastPunctuation + 1);
+                    sentenceBuffer = sentenceBuffer.slice(lastPunctuation + 1);
+                    speakChunk(toSpeak);
+                }
              }
           }
         }
@@ -244,6 +278,10 @@
       messages = messages.slice(0, -1);
     } finally {
       isGenerating = false;
+      // 1. Restart listening if user enabled hands-free mode
+      if (wantsListening) {
+         restartListeningWhenSafe();
+      }
     }
   }
   
@@ -272,6 +310,7 @@
   
   function handleClose() {
     stopSpeaking();
+    wantsListening = false;
     if (recognition) recognition.abort();
     clearTimeout(silenceTimer);
     onClose();
@@ -398,10 +437,10 @@
               <button
                 on:click={toggleListening}
                 disabled={isGenerating || !generator}
-                class="px-3 py-3 rounded-lg transition-colors flex items-center justify-center {isListening ? 'bg-red-600 hover:bg-red-700 animate-pulse' : 'bg-gray-700 hover:bg-gray-600 text-white'}"
-                title={isListening ? "Stop Listening" : "Start Listening"}
+                class="px-3 py-3 rounded-lg transition-colors flex items-center justify-center {wantsListening ? 'bg-red-600 hover:bg-red-700 animate-pulse' : 'bg-gray-700 hover:bg-gray-600 text-white'}"
+                title={wantsListening ? "Stop Hands-Free Mode" : "Start Hands-Free Mode"}
               >
-                {#if isListening}
+                {#if wantsListening}
                   <span class="text-xl">⏹️</span>
                 {:else}
                   <span class="text-xl">🎤</span>
@@ -414,7 +453,7 @@
               bind:value={inputMessage}
               on:keypress={handleKeyPress}
               disabled={!generator || isGenerating}
-              placeholder={isListening ? "Listening... (Auto-send after pause)" : (generator ? "Type or speak..." : "Loading model...")}
+              placeholder={wantsListening ? "Hands-free mode active... (Speak now)" : (generator ? "Type or speak..." : "Loading model...")}
               class="flex-1 px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             
@@ -426,7 +465,7 @@
               {isGenerating ? '...' : 'Send'}
             </button>
           </div>
-          <p class="text-xs text-gray-500 mt-2">Press Enter to send. {recognitionSupported ? 'Click 🎤 to speak.' : ''}</p>
+          <p class="text-xs text-gray-500 mt-2">Press Enter to send. {recognitionSupported ? 'Click 🎤 for hands-free mode.' : ''}</p>
         </div>
       {/if}
     </div>
