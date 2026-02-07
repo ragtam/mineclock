@@ -19,7 +19,7 @@
     initWakeLock();
     
     // Check if microphone is enabled
-    microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') !== 'false';
+    microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') === 'true';
     
     if (microphoneEnabled) {
       registerWakeWord(() => { 
