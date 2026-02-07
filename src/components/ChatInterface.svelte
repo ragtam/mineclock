@@ -1,10 +1,12 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { pipeline, TextStreamer } from '@huggingface/transformers';
-  
+    
   export let isVisible = false;
   export let onClose = () => {};
   
+  const modelName = localStorage.getItem('MODEL') || "onnx-community/Qwen2.5-0.5B-Instruct";
+
   // --- Core Chat State ---
   let messages = [];
   let inputMessage = '';
@@ -98,9 +100,9 @@
     loadingProgress = 'Initializing WebGPU...';
     
     try {
-      console.log('Loading Qwen2.5 model...');
+      console.log(`Loading ${modelName} model...`);
       
-      generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', {
+      generator = await pipeline('text-generation', modelName, {
         device: 'webgpu',
         dtype: 'q4',
         progress_callback: (progress) => {
@@ -119,11 +121,11 @@
       
       messages = [{
         role: 'assistant',
-        content: 'Hello! I\'m Qwen2.5. How can I help you today?',
+        content: `Hello! I'm ${modelName}. How can I help you today?`,
         timestamp: new Date()
       }];
 
-      if (soundEnabled) speakChunk("Hello! I am Qwen. How can I help you today?");
+      if (soundEnabled) speakChunk(`Hello! I am ${modelName}. How can I help you today?`);
       
     } catch (err) {
       error = `Failed to load model: ${err.message}`;

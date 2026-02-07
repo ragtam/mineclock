@@ -10,6 +10,12 @@
   let helloCommand = '';
   let wakeWord = '';
   let microphoneEnabled = true;
+  export const AI_MODELS = [
+    "HuggingFaceTB/SmolLM2-135M-Instruct",
+    "HuggingFaceTB/SmolLM2-360M-Instruct",
+    "onnx-community/Qwen2.5-0.5B-Instruct",
+  ];
+  let selectedModel = AI_MODELS[0];
   
   onMount(() => {
     // Load saved key from localStorage
@@ -17,6 +23,7 @@
     helloCommand = localStorage.getItem('HELLO_COMMAND') || '';
     wakeWord = localStorage.getItem('WAKE_WORD') || 'budzik';
     microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') !== 'false';
+    selectedModel = localStorage.getItem('MODEL') || AI_MODELS[0];
   });
   
   function handleSave() {
@@ -24,6 +31,7 @@
     localStorage.setItem('HELLO_COMMAND', helloCommand);
     localStorage.setItem('WAKE_WORD', wakeWord);
     localStorage.setItem('MICROPHONE_ENABLED', microphoneEnabled.toString());
+    localStorage.setItem('MODEL', selectedModel);
     onSave();
   }
   
@@ -67,6 +75,16 @@
             class="win95-input"
           />
           <p class="win95-hint">Word to activate voice assistant (Polish)</p>
+        </div>
+
+        <div class="win95-field">
+          <label for="model-select" class="win95-label">Model:</label>
+          <select id="model-select" bind:value={selectedModel} class="win95-input">
+            {#each AI_MODELS as m}
+              <option value={m}>{m}</option>
+            {/each}
+          </select>
+          <p class="win95-hint">Selected model: {selectedModel}</p>
         </div>
 
         <!-- Microphone Toggle -->
