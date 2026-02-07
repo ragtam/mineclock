@@ -5,7 +5,7 @@
   export let isVisible = false;
   export let onClose = () => {};
   
-  const modelName = localStorage.getItem('MODEL') || "onnx-community/Qwen2.5-0.5B-Instruct";
+  const modelName = localStorage.getItem('MODEL') || "HuggingFaceTB/SmolLM2-135M-Instruct";
 
   // --- Core Chat State ---
   let messages = [];
