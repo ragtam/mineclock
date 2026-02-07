@@ -323,29 +323,33 @@
 </script>
 
 {#if isVisible}
-  <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-    <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-4xl h-[100vh] flex flex-col">
-      <div class="flex items-center justify-between p-4 border-b border-gray-700">
+  <div class="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/60">
+    
+    <div class="lego-container w-full max-w-4xl h-[100vh] sm:h-[90vh] flex flex-col relative overflow-hidden shadow-2xl">
+      
+      <div class="lego-header flex items-center justify-between p-3 z-10">
         <div class="flex items-center gap-3">
-          <span class="text-2xl">🤖</span>
+          <div class="brick-icon bg-yellow-400">
+            <span class="text-2xl drop-shadow-md">🤖</span>
+          </div>
           <div>
-            <h2 class="text-xl font-bold text-white">AI Chat - Qwen2.5</h2>
-            <p class="text-sm text-gray-400">
+            <h2 class="text-xl font-black text-white tracking-wider drop-shadow-md uppercase">Brick Bot</h2>
+            <div class="brick-status px-2 py-0.5 rounded text-xs font-bold text-white bg-black/40 inline-block">
               {#if isModelLoading}
-                Loading model...
+                LOADING...
               {:else if generator}
-                <span class="text-green-400">● Ready (WebGPU)</span>
+                <span class="text-green-300">● ONLINE</span>
               {:else}
-                <span class="text-yellow-400">● Not loaded</span>
+                <span class="text-yellow-300">● OFFLINE</span>
               {/if}
-            </p>
+            </div>
           </div>
         </div>
         
         <div class="flex gap-2">
            <button
             on:click={toggleSound}
-            class="px-3 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors flex items-center gap-2"
+            class="lego-btn small {soundEnabled ? 'bg-green-500' : 'bg-red-500'}"
             title={soundEnabled ? "Mute" : "Unmute"}
           >
             {soundEnabled ? '🔊' : '🔇'} 
@@ -354,137 +358,297 @@
           {#if generator}
             <button
               on:click={clearChat}
-              class="px-3 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
+              class="lego-btn small bg-blue-500"
               title="Clear chat"
             >
-              🗑️ Clear
+              🗑️
             </button>
           {/if}
           <button
             on:click={handleClose}
-            class="px-3 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
+            class="lego-btn small bg-red-600"
           >
-            ✕ Close
+            ✕
           </button>
         </div>
       </div>
       
-      {#if isModelLoading}
-        <div class="flex-1 flex flex-col items-center justify-center p-8">
-          <div class="text-center">
-            <div class="mb-4">
-              <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-            </div>
-            <p class="text-white text-lg mb-2">Loading AI Model</p>
-            <p class="text-gray-400 text-sm">{loadingProgress}</p>
-            <p class="text-gray-500 text-xs mt-4">This may take a minute on first load...</p>
-          </div>
-        </div>
-      {:else}
-        <div
-          bind:this={chatContainer}
-          class="flex-1 overflow-y-auto p-4 space-y-4"
-        >
-          {#if messages.length === 0}
-            <div class="text-center text-gray-500 mt-8">
-              <p class="text-4xl mb-4">💬</p>
-              <p>No messages yet. Start a conversation!</p>
-            </div>
-          {/if}
-          
-          {#each messages as message}
-            <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-              <div class="max-w-[70%] {message.role === 'user' ? 'bg-blue-600' : 'bg-gray-700'} rounded-lg p-3">
-                <div class="flex items-start gap-2">
-                  <span class="text-lg">{message.role === 'user' ? '👤' : '🤖'}</span>
-                  <div class="flex-1">
-                    <p class="text-white whitespace-pre-wrap break-words">{message.content}</p>
-                    <p class="text-xs text-gray-300 mt-1 opacity-70">
-                      {message.timestamp.toLocaleTimeString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          {/each}
-          
-          {#if isGenerating && streamingMessageIndex === -1}
-            <div class="flex justify-start">
-              <div class="max-w-[70%] bg-gray-700 rounded-lg p-3">
-                <div class="flex items-center gap-2">
-                  <span class="text-lg">🤖</span>
-                  <div class="flex gap-1">
-                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
-                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          {/if}
-        </div>
+      <div class="lego-baseplate flex-1 flex flex-col relative overflow-hidden">
         
-        {#if error}
-          <div class="px-4 py-2 bg-red-900 bg-opacity-50 border-t border-red-700">
-            <p class="text-red-300 text-sm">⚠️ {error}</p>
+        {#if isModelLoading}
+          <div class="flex-1 flex flex-col items-center justify-center p-8 z-10">
+            <div class="lego-loader mb-6">
+              <div class="brick red"></div>
+              <div class="brick blue"></div>
+              <div class="brick yellow"></div>
+            </div>
+            <p class="text-white text-xl font-bold uppercase tracking-widest drop-shadow-md">Building AI...</p>
+            <p class="text-white font-mono text-sm bg-black/30 px-2 py-1 mt-2 rounded">{loadingProgress}</p>
+          </div>
+        {:else}
+          <div
+            bind:this={chatContainer}
+            class="flex-1 overflow-y-auto p-4 space-y-6 z-10"
+          >
+            {#if messages.length === 0}
+              <div class="text-center mt-12 opacity-80">
+                <div class="inline-block p-6 bg-yellow-400 rounded-lg shadow-brick border-4 border-yellow-600">
+                    <p class="text-5xl mb-2">🧱</p>
+                    <p class="font-bold text-yellow-900">Start building a chat!</p>
+                </div>
+              </div>
+            {/if}
+            
+            {#each messages as message}
+              <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
+                <div class="max-w-[85%] relative group">
+                    <div class="absolute -top-3 left-0 w-full h-4 flex gap-1 px-2 {message.role === 'user' ? 'justify-end' : 'justify-start'}">
+                       <div class="w-4 h-2 rounded-t-sm opacity-50 {message.role === 'user' ? 'bg-blue-700' : 'bg-yellow-600'}"></div>
+                       <div class="w-4 h-2 rounded-t-sm opacity-50 {message.role === 'user' ? 'bg-blue-700' : 'bg-yellow-600'}"></div>
+                    </div>
+
+                    <div class="p-4 rounded-md shadow-brick border-b-4 border-r-4 
+                        {message.role === 'user' 
+                            ? 'bg-blue-500 border-blue-700 text-white' 
+                            : 'bg-yellow-400 border-yellow-600 text-yellow-900'}">
+                        
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl filter drop-shadow-sm">{message.role === 'user' ? '👤' : '🤖'}</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold font-sans whitespace-pre-wrap break-words leading-relaxed">
+                                    {message.content}
+                                </p>
+                                <p class="text-[10px] uppercase font-bold mt-2 opacity-60">
+                                    {message.timestamp.toLocaleTimeString()}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            {/each}
+            
+            {#if isGenerating && streamingMessageIndex === -1}
+              <div class="flex justify-start">
+                 <div class="p-3 bg-yellow-400 border-b-4 border-r-4 border-yellow-600 rounded-md shadow-brick">
+                    <div class="flex gap-2">
+                      <div class="w-3 h-3 bg-yellow-800 rounded-full animate-bounce"></div>
+                      <div class="w-3 h-3 bg-yellow-800 rounded-full animate-bounce delay-75"></div>
+                      <div class="w-3 h-3 bg-yellow-800 rounded-full animate-bounce delay-150"></div>
+                    </div>
+                 </div>
+              </div>
+            {/if}
+          </div>
+          
+          {#if error}
+            <div class="mx-4 mb-2 p-3 bg-red-600 border-4 border-red-800 rounded shadow-lg text-white font-bold flex items-center gap-2">
+              <span>⚠️</span> {error}
+            </div>
+          {/if}
+          
+          <div class="lego-footer p-3 border-t-4 border-black/20 bg-gray-100 relative z-20">
+            <div class="flex gap-2 relative items-stretch">
+              
+              {#if recognitionSupported}
+                <button
+                  on:click={toggleListening}
+                  disabled={isGenerating || !generator}
+                  class="lego-btn square flex items-center justify-center 
+                  {wantsListening ? 'bg-red-600 animate-pulse-brick' : 'bg-gray-400'}"
+                  title={wantsListening ? "Stop Hands-Free Mode" : "Start Hands-Free Mode"}
+                >
+                    <span class="text-2xl drop-shadow-sm text-white">
+                        {wantsListening ? '⏹️' : '🎤'}
+                    </span>
+                </button>
+              {/if}
+  
+              <input
+                type="text"
+                bind:value={inputMessage}
+                on:keypress={handleKeyPress}
+                disabled={!generator || isGenerating}
+                placeholder={wantsListening ? "Listening..." : (generator ? "Assemble your thoughts..." : "Gathering bricks...")}
+                class="lego-input flex-1"
+              />
+              
+              <button
+                on:click={sendMessage}
+                disabled={!inputMessage.trim() || !generator || isGenerating}
+                class="lego-btn px-6 bg-green-600 text-white font-black uppercase tracking-wider"
+              >
+                {isGenerating ? '...' : 'SEND'}
+              </button>
+            </div>
+            
+            <p class="text-[10px] text-gray-500 font-bold uppercase mt-2 text-center tracking-widest">
+                System Ready {recognitionSupported ? '• Mic Available' : ''}
+            </p>
           </div>
         {/if}
-        
-        <div class="p-4 border-t border-gray-700">
-          <div class="flex gap-2 relative">
-            
-            {#if recognitionSupported}
-              <button
-                on:click={toggleListening}
-                disabled={isGenerating || !generator}
-                class="px-3 py-3 rounded-lg transition-colors flex items-center justify-center {wantsListening ? 'bg-red-600 hover:bg-red-700 animate-pulse' : 'bg-gray-700 hover:bg-gray-600 text-white'}"
-                title={wantsListening ? "Stop Hands-Free Mode" : "Start Hands-Free Mode"}
-              >
-                {#if wantsListening}
-                  <span class="text-xl">⏹️</span>
-                {:else}
-                  <span class="text-xl">🎤</span>
-                {/if}
-              </button>
-            {/if}
-
-            <input
-              type="text"
-              bind:value={inputMessage}
-              on:keypress={handleKeyPress}
-              disabled={!generator || isGenerating}
-              placeholder={wantsListening ? "Hands-free mode active... (Speak now)" : (generator ? "Type or speak..." : "Loading model...")}
-              class="flex-1 px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            
-            <button
-              on:click={sendMessage}
-              disabled={!inputMessage.trim() || !generator || isGenerating}
-              class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
-            >
-              {isGenerating ? '...' : 'Send'}
-            </button>
-          </div>
-          <p class="text-xs text-gray-500 mt-2">Press Enter to send. {recognitionSupported ? 'Click 🎤 for hands-free mode.' : ''}</p>
-        </div>
-      {/if}
+      </div>
     </div>
   </div>
 {/if}
 
 <style>
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-0.5rem); }
+  /* --- Colors --- */
+  :global(:root) {
+    --lego-red: #D01012;
+    --lego-blue: #0055BF;
+    --lego-yellow: #F6AC19;
+    --lego-green: #237841;
+    --lego-white: #FFFFFF;
+    --lego-dark: #111111;
+    --lego-grey: #9BA19D;
   }
-  .animate-bounce { animation: bounce 1s infinite; }
-  
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .animate-spin { animation: spin 1s linear infinite; }
 
-  @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+  /* --- Lego Container & Frame --- */
+  .lego-container {
+    background-color: var(--lego-red);
+    border: 8px solid var(--lego-red);
+    border-radius: 12px;
+    box-shadow: 
+        inset 2px 2px 0 rgba(255,255,255,0.3),
+        inset -2px -2px 0 rgba(0,0,0,0.3),
+        0 20px 50px rgba(0,0,0,0.5);
   }
-  .animate-pulse { animation: pulse-red 2s infinite; }
+
+  /* --- Header --- */
+  .lego-header {
+    background-color: var(--lego-blue);
+    border-bottom: 4px solid #003da0; /* Darker blue */
+    /* Stud pattern on header */
+    background-image: radial-gradient(rgba(0,0,0,0.2) 15%, transparent 16%),
+                      radial-gradient(rgba(255,255,255,0.1) 15%, transparent 16%);
+    background-size: 16px 16px;
+    background-position: 0 0, 2px 2px;
+  }
+
+  .brick-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border-bottom: 4px solid #cc8e14; /* Darker yellow */
+    border-right: 4px solid #cc8e14;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,0.4);
+  }
+
+  /* --- Baseplate (Chat Area) --- */
+  .lego-baseplate {
+    background-color: #2a2a2a; /* Dark baseplate */
+    /* The Stud Pattern */
+    background-image: 
+        radial-gradient(#1a1a1a 40%, transparent 42%);
+    background-size: 24px 24px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  }
+
+  /* --- Buttons --- */
+  .lego-btn {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.1s, border-width 0.1s;
+    /* 3D Brick Look */
+    border-bottom: 4px solid rgba(0,0,0,0.3);
+    border-right: 4px solid rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(255,255,255,0.3);
+    border-left: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .lego-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+  }
+
+  .lego-btn:active:not(:disabled) {
+    transform: translateY(2px);
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+  }
+  
+  .lego-btn:disabled {
+    background-color: var(--lego-grey);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .lego-btn.small {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .lego-btn.square {
+    width: 50px;
+  }
+
+  /* --- Input --- */
+  .lego-input {
+    background: white;
+    border: 4px solid #ccc;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-family: sans-serif;
+    font-weight: 600;
+    color: #333;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    transition: border-color 0.2s;
+  }
+  
+  .lego-input:focus {
+    border-color: var(--lego-blue);
+  }
+
+  /* --- Utilities --- */
+  .shadow-brick {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+
+  /* --- Animations --- */
+  .lego-loader {
+    display: flex;
+    gap: 8px;
+  }
+  .lego-loader .brick {
+    width: 20px;
+    height: 30px;
+    border-radius: 2px;
+    animation: brick-jump 0.6s infinite alternate;
+  }
+  .lego-loader .brick.red { background: var(--lego-red); animation-delay: 0s; }
+  .lego-loader .brick.blue { background: var(--lego-blue); animation-delay: 0.2s; }
+  .lego-loader .brick.yellow { background: var(--lego-yellow); animation-delay: 0.4s; }
+
+  @keyframes brick-jump {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15px); }
+  }
+
+  @keyframes pulse-brick {
+    0%, 100% { background-color: var(--lego-red); transform: scale(1); }
+    50% { background-color: #ff4d4d; transform: scale(1.05); }
+  }
+  .animate-pulse-brick { animation: pulse-brick 1.5s infinite; }
+
+  /* Scrollbar Styling */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 12px;
+  }
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+  }
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: var(--lego-grey);
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+  }
 </style>
