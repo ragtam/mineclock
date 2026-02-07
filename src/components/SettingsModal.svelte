@@ -9,18 +9,21 @@
   let pvKey = '';
   let helloCommand = '';
   let wakeWord = '';
+  let microphoneEnabled = true;
   
   onMount(() => {
     // Load saved key from localStorage
     pvKey = localStorage.getItem('PV_KEY') || '';
     helloCommand = localStorage.getItem('HELLO_COMMAND') || '';
     wakeWord = localStorage.getItem('WAKE_WORD') || 'budzik';
+    microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') !== 'false';
   });
   
   function handleSave() {
     localStorage.setItem('PV_KEY', pvKey);
     localStorage.setItem('HELLO_COMMAND', helloCommand);
     localStorage.setItem('WAKE_WORD', wakeWord);
+    localStorage.setItem('MICROPHONE_ENABLED', microphoneEnabled.toString());
     onSave();
   }
   
@@ -64,6 +67,19 @@
             class="win95-input"
           />
           <p class="win95-hint">Word to activate voice assistant (Polish)</p>
+        </div>
+
+        <!-- Microphone Toggle -->
+        <div class="win95-field">
+          <label class="win95-checkbox-label">
+            <input 
+              type="checkbox" 
+              bind:checked={microphoneEnabled}
+              class="win95-checkbox"
+            />
+            Enable Microphone / Wake Word Detection
+          </label>
+          <p class="win95-hint">Uncheck to disable voice activation</p>
         </div>
         
         <!-- Action Buttons -->
@@ -173,6 +189,21 @@
     margin-top: 4px;
     font-size: 11px;
     color: #000080;
+  }
+
+  .win95-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #000000;
+    cursor: pointer;
+  }
+
+  .win95-checkbox {
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
   }
   
   .win95-buttons {

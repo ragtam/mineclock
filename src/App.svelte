@@ -13,13 +13,20 @@
   let settingsOpen = false;
   let wakeWordVisible = false;
   let chatVisible = false;
+  let microphoneEnabled = true;
   
   onMount(() => {
     initWakeLock();
-    registerWakeWord(() => { 
-      console.log('Wake word detected!');
-      showWakeWordOverlay();
-    });
+    
+    // Check if microphone is enabled
+    microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') !== 'false';
+    
+    if (microphoneEnabled) {
+      registerWakeWord(() => { 
+        console.log('Wake word detected!');
+        showWakeWordOverlay();
+      });
+    }
   });
   
   function showWakeWordOverlay() {
@@ -29,6 +36,8 @@
   function handleSaveSettings() {
     console.log('Settings saved');
     settingsOpen = false;
+    // Reload page to apply microphone settings
+    setTimeout(() => window.location.reload(), 100);
   }
   
   function handleReloadPage() {
