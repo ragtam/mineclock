@@ -9,6 +9,7 @@
 
   import { initWakeLock } from './modules/wakeLock.js';
   import { registerWakeWord } from './wake-word/index.js';
+  import { landmarkPose } from './modules/pose-landmarker.ts';
   
   let settingsOpen = false;
   let wakeWordVisible = false;
@@ -17,6 +18,7 @@
   
   onMount(() => {
     initWakeLock();
+    landmarkPose();
     
     // Check if microphone is enabled
     microphoneEnabled = localStorage.getItem('MICROPHONE_ENABLED') === 'true';
@@ -67,6 +69,14 @@
     >
       🤖
     </button>
+
+    <button id="webcamButton" class="pointer-events-auto left-8 px-4 py-4 text-white bg-black hover:bg-gray-900 transition-colors text-xl z-10 opacity-30 hover:opacity-100">
+      Enable webcam
+    </button>
+         <div style="position: relative;">
+        <video id="webcam" style="width: 640px; height: 480px; position: abso" autoplay playsinline></video>
+        <canvas class="output_canvas" id="output_canvas" width="640" height="480" style="position: absolute; left: 0px; top: 0px;"></canvas>
+      </div>
   </div>
   
   <SettingsModal 
