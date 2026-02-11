@@ -69,9 +69,11 @@ export async function landmarkPose(callback: ({ anyPoseVisible }: { anyPoseVisib
       enableWebcamButton.innerText = "DISABLE PREDICTIONS";
     }
 
-    // getUsermedia parameters.
+    // getUsermedia parameters - use front camera on mobile
     const constraints = {
-      video: true
+      video: {
+        facingMode: "user" // Use front-facing camera (user-facing)
+      }
     };
 
     // Activate the webcam stream.
