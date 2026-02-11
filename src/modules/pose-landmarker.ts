@@ -12,7 +12,7 @@ let webcamRunning: Boolean = false;
 const videoHeight = "360px";
 const videoWidth = "480px";
 
-export async function landmarkPose() {
+export async function landmarkPose(callback: ({ anyPoseVisible }: { anyPoseVisible: boolean }) => void) {
     // Before we can use PoseLandmarker class we must wait for it to finish
     // loading. Machine Learning models can be large and take a moment to
     // get everything needed to run.
@@ -99,14 +99,29 @@ export async function landmarkPose() {
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-        console.log('result:', result);
+        callback({ anyPoseVisible: result.landmarks.length > 0 });
 
+        // LEGO-inspired vibrant colors
+        const legoColors = [
+          { landmark: '#FFD700', connector: '#FFC700' }, // Bright Yellow
+          { landmark: '#00B3E6', connector: '#0095C8' }, // Bright Blue
+          { landmark: '#FF0000', connector: '#D40000' }, // Bright Red
+          { landmark: '#00CC00', connector: '#00AA00' }, // Bright Green
+        ];
 
-        for (const landmark of result.landmarks) {
+        for (let i = 0; i < result.landmarks.length; i++) {
+          const landmark = result.landmarks[i];
+          const colors = legoColors[i % legoColors.length];
+          
           drawingUtils.drawLandmarks(landmark, {
-            radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1)
+            radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1),
+            color: colors.landmark,
+            fillColor: colors.landmark
           });
-          drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
+          drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS, {
+            color: colors.connector,
+            lineWidth: 4
+          });
         }
         canvasCtx.restore();
       });
