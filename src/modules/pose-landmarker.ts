@@ -72,7 +72,9 @@ export async function landmarkPose(callback: ({ anyPoseVisible }: { anyPoseVisib
     // getUsermedia parameters - use front camera on mobile
     const constraints = {
       video: {
-        facingMode: "user" // Use front-facing camera (user-facing)
+        facingMode: { ideal: "user" }, // Prefer front-facing camera
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
       }
     };
 
@@ -80,6 +82,15 @@ export async function landmarkPose(callback: ({ anyPoseVisible }: { anyPoseVisib
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       video.srcObject = stream;
       video.addEventListener("loadeddata", predictWebcam);
+    }).catch((error) => {
+      console.error("Camera access error:", error);
+      // Fallback to any available camera
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        video.srcObject = stream;
+        video.addEventListener("loadeddata", predictWebcam);
+      }).catch((err) => {
+        console.error("Fallback camera access failed:", err);
+      });
     });
   }
 
